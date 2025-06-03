@@ -1,0 +1,58 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coronakingg's TF2 Profile</title>
+  <link rel="stylesheet" href="/public/style.css">
+</head>
+<body>
+  <header>
+    <h1>Welcome back, <span id="username">Loading...</span></h1>
+    <div id="xp">XP Progress: <progress value="13.83" max="100"></progress> 13.83%</div>
+  </header>
+
+  <section class="panel">
+    <h2>TF2 Stats</h2>
+    <ul id="stats"></ul>
+  </section>
+
+  <section class="panel">
+    <h2>TF2 Achievements</h2>
+    <ul id="achievements"></ul>
+  </section>
+
+  <section class="panel">
+    <h2>Inventory Value</h2>
+    <div id="inventory"></div>
+  </section>
+
+  <section class="panel">
+    <h2>Custom Loadouts</h2>
+    <div id="loadouts"></div>
+  </section>
+
+  <script>
+    fetch('/api/data')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('username').innerText = data.profile.personaname;
+
+        const stats = data.stats.stats.map(s => `<li>${s.name}: ${s.value}</li>`).join('');
+        document.getElementById('stats').innerHTML = stats;
+
+        const achievements = data.achievements.achievements.filter(a => a.achieved === 1)
+          .map(a => `<li>${a.apiname}</li>`).join('');
+        document.getElementById('achievements').innerHTML = achievements;
+
+        document.getElementById('inventory').innerText = `${data.inventory.value} ref (${data.inventory.keys} keys)`;
+
+        const loadouts = [
+          'Scout', 'Soldier', 'Pyro', 'Demoman', 'Heavy', 'Engineer', 'Medic', 'Sniper', 'Spy'
+        ].map(cls => `<div class="loadout"><h3>${cls}</h3><p>Coming soon...</p></div>`).join('');
+        document.getElementById('loadouts').innerHTML = loadouts;
+      });
+  </script>
+</body>
+</html>
